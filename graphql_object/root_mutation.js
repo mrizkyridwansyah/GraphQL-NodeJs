@@ -2,7 +2,7 @@ const { GraphQLObjectType, GraphQLNonNull, GraphQLString, GraphQLInt, GraphQLBoo
 const { authorsObjType, genreObjType, mangaObjType } = require("./child");
 const Author = require('../models/author')
 const Genre = require('../models/genre')
-const Manga = require('../models/manga')
+const Manga = require('../models/manga');
 
 const rootMutationObjType = new GraphQLObjectType({
     name: 'RootMutation',
@@ -19,6 +19,40 @@ const rootMutationObjType = new GraphQLObjectType({
                 try{
                     await newAuthor.save()
                     return newAuthor
+                } catch(err) {
+                    console.log(err)
+                }
+            }
+        },
+        updateAuthor: {
+            type: authorsObjType,
+            description: 'Update Author',
+            args: {
+                id: { type: GraphQLNonNull(GraphQLID) },
+                name: { type: GraphQLNonNull(GraphQLString) }
+            },
+            resolve: async (parent, args) => {
+                try{
+                    let author = await Author.findById(args.id)
+                    author.name = args.name
+                    await author.save()
+                    return author
+                } catch(err) {
+                    console.log(err)
+                }
+            }
+        },
+        deleteAuthor: {
+            type: authorsObjType,
+            description: 'Delete Author',
+            args: {
+                id: { type: GraphQLID}
+            },
+            resolve: async (parent, args) => {
+                try{
+                    const author = await Author.findById(args.id)
+                    await author.remove() 
+                    return author
                 } catch(err) {
                     console.log(err)
                 }
