@@ -1,5 +1,5 @@
 const { GraphQLObjectType, GraphQLList, GraphQLString, GraphQLID, GraphQLNonNull } = require("graphql");
-const { getAuthor, getGenres, getMangas } = require('../data/get_data')
+const { getAuthorById, getAuthor, getGenreById, getGenres, getMangaById, getMangas } = require('../data/get_data')
 const dataObjType = require('./child')
 
 const rootObjType = new GraphQLObjectType({
@@ -10,10 +10,10 @@ const rootObjType = new GraphQLObjectType({
             type: dataObjType.authorsObjType,
             description: 'Get an Author',
             args: {
-                id: { type: GraphQLNonNull(GraphQLString) }
+                id: { type: GraphQLNonNull(GraphQLID) }
             },
             resolve: async (parent, args) => {
-                return await Author.findById(args.id)
+                return await getAuthorById(args.id)
             } 
         },
         authors: { 
@@ -33,10 +33,10 @@ const rootObjType = new GraphQLObjectType({
             type: dataObjType.genreObjType,
             description: 'Get a Genre',
             args: {
-                id: { type: GraphQLString } 
+                id: { type: GraphQLNonNull(GraphQLID) } 
             },
             resolve: async (parent, args) => {
-                return await Genre.findById(args.id)
+                return await getGenreById(args.id)
             }
         },
         genres: { 
@@ -56,10 +56,10 @@ const rootObjType = new GraphQLObjectType({
             type: dataObjType.mangaObjType,
             description: 'Get a Manga',
             args: {
-                id: { type: GraphQLString } 
+                id: { type: GraphQLNonNull(GraphQLID) } 
             },
             resolve: async (parent, args) => {
-                return await Manga.findById(args.id)
+                return await getMangaById(args.id)
             }
         },
         mangas: { 

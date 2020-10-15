@@ -16,9 +16,12 @@ const db = mongoose.connection
 db.on('error', err => { console.log(err) })
 db.on('open', () => { console.log('Connected to Mongoose') })
 
-const rootObjType = require('./graphql_object/root')
+const rootQueryObjType = require('./graphql_object/root_query')
+const rootMutationObjType = require('./graphql_object/root_mutation')
+
 const schema = new GraphQLSchema({
-    query: rootObjType
+    query: rootQueryObjType,//query : this is to GET data from RootQueryObjectType
+    mutation: rootMutationObjType//mutation : this is to POST, PUT, DELETE data from RootMutationObjectType
 })
 
 // app.use('/', seeder)
