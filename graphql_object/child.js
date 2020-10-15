@@ -1,8 +1,5 @@
 const { GraphQLObjectType, GraphQLNonNull, GraphQLString, GraphQLInt, GraphQLBoolean, GraphQLID, GraphQLList } = require('graphql')
-
-const Author = require('../models/author')
-const Genre = require('../models/genre')
-const Manga = require('../models/manga')
+const { getAuthor, getGenres, getMangas } = require('../data/get_data')
 
 const authorsObjType = new GraphQLObjectType({
     name: 'Authors',
@@ -13,7 +10,7 @@ const authorsObjType = new GraphQLObjectType({
         mangas: { 
             type: new GraphQLList(mangaObjType),
             resolve: async (author) => {
-                const mangasData = await Manga.find()                
+                const mangasData = await getMangas()               
                 return mangasData.filter(manga => manga.authorId == author.id)
             }
         }
@@ -28,7 +25,7 @@ const genreObjType = new GraphQLObjectType({
         mangas: {
             type: GraphQLList(mangaObjType),
             resolve: async (genre) => {
-                const mangasData = await Manga.find()
+                const mangasData = await getMangas()
                 return mangasData.filter(manga => manga.genreId.split(',').includes(genre.id))
             }
         }
@@ -45,7 +42,7 @@ const mangaObjType = new GraphQLObjectType({
         genres: { 
             type: GraphQLList(genreObjType), 
             resolve: async (manga) => { 
-                const genresData = await Genre.find()
+                const genresData = await getGenres()
                 return genresData.filter(genre => manga.genreId.includes(genre.id)) 
             }
         },        
@@ -55,7 +52,7 @@ const mangaObjType = new GraphQLObjectType({
         author: { 
             type: new GraphQLList(authorsObjType), 
             resolve: async (manga) => {
-                const authorsData = await Author.find()
+                const authorsData = await getAuthor()
                 return authorsData.filter(author => author.id == manga.authorId)
             }
         } 
